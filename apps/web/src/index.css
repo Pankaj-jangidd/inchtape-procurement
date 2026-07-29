@@ -1,0 +1,67 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------
+   InchTape Procurement — Design Tokens
+   Base: white / off-white, black text
+   Accent: yellow, used sparingly (status, priority, primary actions)
+   Mirrors the InchTape wordmark: black type, single yellow accent
+--------------------------------------------------- */
+@theme {
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  /* Base surfaces */
+  --color-bg: #ffffff;
+  --color-surface: #fafaf8;
+  --color-surface-raised: #ffffff;
+  --color-border: #e8e6e1;
+  --color-border-strong: #d8d5cd;
+
+  /* Text */
+  --color-ink: #0a0a0a;
+  --color-ink-muted: #6b6b68;
+  --color-ink-faint: #9c9a94;
+
+  /* Accent — InchTape yellow */
+  --color-accent: #f2c230;
+  --color-accent-strong: #d9a800;
+  --color-accent-ink: #241c00;
+  --color-accent-soft: #fdf3d6;
+
+  /* Status colors (used only as small dots/pills, never large fills) */
+  --color-status-none: #b8b6b0;
+  --color-status-ordered: #4c8dff;
+  --color-status-nostock: #e5484d;
+  --color-status-sent: #8e5cf7;
+  --color-status-received: #2fae5c;
+
+  /* Priority */
+  --color-priority-urgent: #e5484d;
+  --color-priority-high: #f2c230;
+  --color-priority-medium: #4c8dff;
+  --color-priority-low: #b8b6b0;
+
+  --radius-card: 1rem;
+  --shadow-card: 0 1px 2px rgba(10, 10, 10, 0.04), 0 4px 12px rgba(10, 10, 10, 0.04);
+  --shadow-card-active: 0 2px 4px rgba(10, 10, 10, 0.06), 0 8px 20px rgba(10, 10, 10, 0.08);
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* mobile-first: avoid iOS tap highlight flash */
+  -webkit-tap-highlight-color: transparent;
+}
+
+* {
+  box-sizing: border-box;
+}

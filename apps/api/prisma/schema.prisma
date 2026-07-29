@@ -1,0 +1,144 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  SUPERVISOR
+  PROCUREMENT
+  ADMIN
+}
+
+enum RequestStatus {
+  NONE
+  ORDERED
+  NO_STOCK
+  SENT
+  RECEIVED
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum AttachmentType {
+  IMAGE
+  SKETCH
+  VOICE_NOTE
+}
+
+enum SiteType {
+  INCHTAPE
+  KG
+  OTHER
+}
+
+model User {
+  id            String   @id @default(cuid())
+  name          String
+  email         String   @unique
+  passwordHash  String
+  role          Role
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  sites         SiteSupervisor[]
+  sitesCreated  Site[]           @relation("SiteCreatedBy")
+  requests      Request[]        @relation("RequestCreatedBy")
+  statusChanges StatusHistory[]  @relation("StatusChangedBy")
+  fcmTokens     FcmToken[]
+}
+
+model Site {
+  id          String   @id @default(cuid())
+  name        String
+  code        String   @unique
+  address     String?
+  type        SiteType @default(INCHTAPE)
+  isActive    Boolean  @default(true) // supervisor marks false when site wraps up
+  createdBy   User?    @relation("SiteCreatedBy", fields: [createdById], references: [id])
+  createdById String?
+  createdAt   DateTime @default(now())
+
+  supervisors SiteSupervisor[]
+  requests    Request[]
+}
+
+// Many-to-many: a supervisor can be assigned to multiple sites (and vice versa)
+model SiteSupervisor {
+  id           String @id @default(cuid())
+  site         Site   @relation(fields: [siteId], references: [id])
+  siteId       String
+  supervisor   User   @relation(fields: [supervisorId], references: [id])
+  supervisorId String
+
+  @@unique([siteId, supervisorId])
+}
+
+model Request {
+  id             String        @id @default(cuid())
+  materialName   String
+  quantity       Int
+  unit           String? // e.g. "No.", "Bags", "Sqft"
+  priority       Priority      @default(MEDIUM)
+  description    String?
+  notes          String? // shared note, editable by supervisor & procurement
+  status         RequestStatus @default(NONE)
+
+  site           Site          @relation(fields: [siteId], references: [id])
+  siteId         String
+  createdBy      User          @relation("RequestCreatedBy", fields: [createdById], references: [id])
+  createdById    String
+
+  archivedAt     DateTime? // soft delete once Received is checked off
+  lastReminderAt DateTime? // for reminder cooldown
+
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  attachments    Attachment[]
+  statusHistory  StatusHistory[]
+
+  @@index([siteId])
+  @@index([status])
+  @@index([createdById])
+}
+
+model Attachment {
+  id          String         @id @default(cuid())
+  request     Request        @relation(fields: [requestId], references: [id])
+  requestId   String
+  type        AttachmentType
+  url         String // Supabase Storage URL
+  fileName    String?
+  durationSec Int? // for voice notes
+  createdAt   DateTime       @default(now())
+}
+
+model StatusHistory {
+  id          String        @id @default(cuid())
+  request     Request       @relation(fields: [requestId], references: [id])
+  requestId   String
+  fromStatus  RequestStatus
+  toStatus    RequestStatus
+  changedBy   User          @relation("StatusChangedBy", fields: [changedById], references: [id])
+  changedById String
+  createdAt   DateTime      @default(now())
+}
+
+model FcmToken {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  token     String   @unique
+  createdAt DateTime @default(now())
+}
