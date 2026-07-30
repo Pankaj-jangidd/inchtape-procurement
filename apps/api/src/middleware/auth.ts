@@ -1,41 +1,35 @@
-import type { NextFunction, Request, Response } from "express";
-import jwt from "jsonwebtoken";
-import { env } from "../config/env.js";
-
-export type AuthedUser = {
-  id: string;
-  role: "SUPERVISOR" | "PROCUREMENT" | "ADMIN";
-};
+import { NextFunction, Request, Response } from "express";
+import { verifyToken } from "../utils/jwt.js";
 
 declare global {
   namespace Express {
     interface Request {
-      user?: AuthedUser;
+      user?: {
+        userId: string;
+        role: "SUPERVISOR" | "PROCUREMENT" | "ADMIN";
+      };
     }
   }
 }
 
-export function authGuard(req: Request, res: Response, next: NextFunction) {
-  const header = req.headers.authorization;
-  if (!header?.startsWith("Bearer ")) {
-    return res.status(401).json({ error: "Missing or invalid Authorization header" });
+export const authGuard = (req: Request, res: Response, next: NextFunction) => {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader?.startsWith("Bearer ")) {
+    return res.status(401).json({
+      message: "Unauthorized",
+    });
   }
 
   try {
-    const token = header.slice("Bearer ".length);
-    const payload = jwt.verify(token, env.jwtSecret) as AuthedUser;
-    req.user = payload;
+    const token = authHeader.split(" ")[1];
+
+    req.user = verifyToken(token);
+
     next();
   } catch {
-    return res.status(401).json({ error: "Invalid or expired token" });
+    return res.status(401).json({
+      message: "Invalid token",
+    });
   }
-}
-
-export function roleGuard(...roles: AuthedUser["role"][]) {
-  return (req: Request, res: Response, next: NextFunction) => {
-    if (!req.user || !roles.includes(req.user.role)) {
-      return res.status(403).json({ error: "Not authorized for this action" });
-    }
-    next();
-  };
-}
+};
