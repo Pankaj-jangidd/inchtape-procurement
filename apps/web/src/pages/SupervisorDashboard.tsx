@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { Card } from "../components/ui/Card";
-import { RequestCard, type RequestCardData } from "../components/request/RequestCard";
+import {
+  RequestCard,
+  type RequestCardData,
+} from "../components/request/RequestCard";
 import { BottomTabBar, type Tab } from "../components/layout/BottomTabBar";
 
 // Placeholder data — Milestone 3 wires this to the real API.
@@ -38,14 +41,16 @@ const TABS: Tab[] = [
   { key: "create", label: "New", icon: <PlusIcon /> },
 ];
 
-export function SupervisorDashboard() {
+export default function SupervisorDashboard() {
   const [tab, setTab] = useState("home");
 
   return (
     <div className="min-h-screen bg-[var(--color-bg)] pb-20">
       <header className="sticky top-0 z-10 border-b border-[var(--color-border)] bg-[var(--color-bg)]/90 px-5 py-4 backdrop-blur">
         <p className="text-xs text-[var(--color-ink-faint)]">Supervisor</p>
-        <h1 className="text-lg font-semibold text-[var(--color-ink)]">Pankaj</h1>
+        <h1 className="text-lg font-semibold text-[var(--color-ink)]">
+          Pankaj
+        </h1>
       </header>
 
       <main className="mx-auto max-w-md px-5 py-5">
@@ -56,7 +61,9 @@ export function SupervisorDashboard() {
           </Card>
           <Card className="!bg-[var(--color-surface)]">
             <p className="text-2xl font-semibold text-[var(--color-ink)]">2</p>
-            <p className="text-xs text-[var(--color-ink-muted)]">Pending Requests</p>
+            <p className="text-xs text-[var(--color-ink-muted)]">
+              Pending Requests
+            </p>
           </Card>
         </div>
 
@@ -65,7 +72,11 @@ export function SupervisorDashboard() {
         </h2>
         <div className="flex flex-col gap-3">
           {SAMPLE_REQUESTS.map((r) => (
-            <RequestCard key={r.id} data={r} onOpen={(id) => console.log("open", id)} />
+            <RequestCard
+              key={r.id}
+              data={r}
+              onOpen={(id) => console.log("open", id)}
+            />
           ))}
         </div>
       </main>
@@ -78,16 +89,38 @@ export function SupervisorDashboard() {
 function HomeIcon() {
   return (
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-      <path d="M3 9.5 10 3l7 6.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M5 8.5V16a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V8.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path
+        d="M3 9.5 10 3l7 6.5"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M5 8.5V16a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V8.5"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }
 function SitesIcon() {
   return (
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-      <path d="M10 2 3 6v8l7 4 7-4V6l-7-4Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
-      <path d="M10 10v8M3 6l7 4 7-4" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+      <path
+        d="M10 2 3 6v8l7 4 7-4V6l-7-4Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M10 10v8M3 6l7 4 7-4"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }
@@ -95,7 +128,12 @@ function PlusIcon() {
   return (
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
       <circle cx="10" cy="10" r="8" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M10 6.5v7M6.5 10h7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <path
+        d="M10 6.5v7M6.5 10h7"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
     </svg>
   );
 }

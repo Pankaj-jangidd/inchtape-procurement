@@ -1,9 +1,8 @@
 import bcrypt from "bcryptjs";
 import { prisma } from "../../config/prisma.js";
 import { signToken } from "../../utils/jwt.js";
-import type { LoginInput } from "./auth.schema.js";
 
-export const login = async ({ email, password }: LoginInput) => {
+export async function login(email: string, password: string) {
   const user = await prisma.user.findUnique({
     where: {
       email,
@@ -14,9 +13,9 @@ export const login = async ({ email, password }: LoginInput) => {
     throw new Error("Invalid email or password");
   }
 
-  const isValid = await bcrypt.compare(password, user.passwordHash);
+  const passwordMatches = await bcrypt.compare(password, user.passwordHash);
 
-  if (!isValid) {
+  if (!passwordMatches) {
     throw new Error("Invalid email or password");
   }
 
@@ -34,4 +33,4 @@ export const login = async ({ email, password }: LoginInput) => {
       role: user.role,
     },
   };
-};
+}

@@ -1,17 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { verifyToken } from "../utils/jwt.js";
 
-declare global {
-  namespace Express {
-    interface Request {
-      user?: {
-        userId: string;
-        role: "SUPERVISOR" | "PROCUREMENT" | "ADMIN";
-      };
-    }
-  }
-}
-
 export const authGuard = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
 

@@ -1,25 +1,16 @@
-import { Request, Response, NextFunction } from "express";
-import { loginSchema } from "./auth.schema.js";
-import * as authService from "./auth.service.js";
+import { Request, Response } from "express";
+import { login } from "./auth.service.js";
 
-export const health = (_req: Request, res: Response) => {
-  res.json({
-    message: "Auth module is working 🚀",
-  });
-};
-
-export const login = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+export async function loginController(req: Request, res: Response) {
   try {
-    const body = loginSchema.parse(req.body);
+    const { email, password } = req.body;
 
-    const result = await authService.login(body);
+    const result = await login(email, password);
 
     res.json(result);
-  } catch (err) {
-    next(err);
+  } catch (error) {
+    res.status(401).json({
+      message: error instanceof Error ? error.message : "Authentication failed",
+    });
   }
-};
+}

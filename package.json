@@ -12,6 +12,7 @@
     "build:api": "npm run build --workspace=apps/api",
     "prisma:generate": "npm run prisma:generate --workspace=apps/api",
     "prisma:migrate": "npm run prisma:migrate --workspace=apps/api",
-    "prisma:studio": "npm run prisma:studio --workspace=apps/api"
+    "prisma:studio": "npm run prisma:studio --workspace=apps/api",
+    "prisma:seed": "npm run prisma:seed --workspace=apps/api"
   }
 }
