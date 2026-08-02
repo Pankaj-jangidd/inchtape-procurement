@@ -6,6 +6,7 @@ import { errorHandler } from "./middleware/errorHandler.js";
 import authRouter from "./modules/auth/index.js";
 import { authGuard } from "./middleware/auth.js";
 import sitesRouter from "./modules/sites/index.js";
+import requestRouter from "./modules/requests/index.js";
 
 const app = express();
 
@@ -13,6 +14,7 @@ app.use(cors({ origin: env.corsOrigin, credentials: true }));
 app.use(express.json());
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/sites", sitesRouter);
+app.use("/api/v1/requests", requestRouter);
 
 // Simple liveness check
 app.get("/api/v1/health", (_req, res) => {
